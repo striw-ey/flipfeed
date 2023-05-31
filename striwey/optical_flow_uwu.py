@@ -3,8 +3,7 @@ import cv2
 import time
 
 
-
-def draw_flow(img, flow, step=10):
+def draw_flow(img, flow, step=20):
 
     h, w = img.shape[:2]
     y, x = np.mgrid[step/2:h:step, step/2:w:step].reshape(2,-1).astype(int)
@@ -21,59 +20,26 @@ def draw_flow(img, flow, step=10):
 
     return img_bgr
 
-
-def draw_hsv(flow):
-
-    h, w = flow.shape[:2]
-    fx, fy = flow[:,:,0], flow[:,:,1]
-
-    ang = np.arctan2(fy, fx) + np.pi
-    v = np.sqrt(fx*fx+fy*fy)
-
-    hsv = np.zeros((h, w, 3), np.uint8)
-    hsv[...,0] = ang*(180/np.pi/2)
-    hsv[...,1] = 255
-    hsv[...,2] = np.minimum(v*4, 255)
-    bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-
-    return bgr
-
-
-
-videoPath = 'slow_traffic_small.mp4'
+#Capture the video and generate a output with cv2
+videoPath = 'dom2.mp4'
 input = cv2.VideoCapture(videoPath)
-output = cv2.VideoWriter('./Striwey/Output/output2_' + videoPath, cv2.VideoWriter_fourcc(*'mp4v'), 50, (int(input.get(3)),int(input.get(4))))
+output = cv2.VideoWriter('./Striwey/Output/output2.1_' + videoPath, cv2.VideoWriter_fourcc(*'mp4v'), 50, (int(input.get(3)),int(input.get(4))))
 
 suc, prev = input.read()
 prevgray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
-
 
 while True:
 
     suc, img = input.read()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # start time to calculate FPS
-    start = time.time()
-
-
     flow = cv2.calcOpticalFlowFarneback(prevgray, gray, None, 0.5, 3, 15, 3, 5, 1.2, 0)
-    
     prevgray = gray
 
-
-    # End time
-    end = time.time()
-    # calculate the FPS for current frame detection
-    fps = 1 / (end-start)
-
-    print(f"{fps:.2f} FPS")
-
+    #Show the process and write frames in output
     imgToShow = draw_flow(gray, flow)
     cv2.imshow('flow', imgToShow)
-    #cv2.imshow('flow HSV', draw_hsv(flow))
     output.write(imgToShow)
-
 
     key = cv2.waitKey(5)
     if key == ord('q'):
@@ -82,3 +48,16 @@ while True:
 output.release()
 input.release()
 cv2.destroyAllWindows()
+
+"""
+# calculating fps
+# start time to calculate FPS
+    start = time.time()
+
+# End time
+    end = time.time()
+    # calculate the FPS for current frame detection
+    fps = 1 / (end-start)
+
+print(f"{fps:.2f} FPS")
+"""
