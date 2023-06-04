@@ -1,0 +1,13 @@
+train: C:\Users\Striwey\OneDrive\Documents\GitHub\flipfeed\dataSetsCustom\ballAndPerson/train/images
+val: C:\Users\Striwey\OneDrive\Documents\GitHub\flipfeed\dataSetsCustom\ballAndPerson/valid/images
+test: C:\Users\Striwey\OneDrive\Documents\GitHub\flipfeed\dataSetsCustom\ballAndPerson/test/images
+
+nc: 2
+names: ['Ball', 'Person']
+
+roboflow:
+  workspace: j-h-a-blom-student-tue-nl
+  project: fbp4
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/j-h-a-blom-student-tue-nl/fbp4/dataset/1

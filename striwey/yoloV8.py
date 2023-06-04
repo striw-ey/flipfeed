@@ -40,7 +40,7 @@ class ObjectDetection:
     
 
     def plot_bboxes(self, results, frame):
-        
+        counter = 0
         xyxys = []
         confidences = []
         class_ids = []
@@ -55,7 +55,11 @@ class ObjectDetection:
                 confidences.append(result.boxes.conf.cpu().numpy())
                 class_ids.append(result.boxes.cls.cpu().numpy().astype(int))
             
-        
+        if counter <= 100:
+            print(result.boxes.xyxy.cpu().numpy())
+            counter += 1
+
+
         # Setup detections for visualization
         detections = Detections(
                     xyxy=results[0].boxes.xyxy.cpu().numpy(),
@@ -63,7 +67,7 @@ class ObjectDetection:
                     class_id=results[0].boxes.cls.cpu().numpy().astype(int),
                     )
         
-    
+
         # Format custom labels
         self.labels = [f"{self.CLASS_NAMES_DICT[class_id]} {confidence:0.2f}"
         for _, confidence, class_id, tracker_id
