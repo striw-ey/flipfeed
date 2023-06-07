@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import time
 
 
 def draw_flow(img, flow, step=20):
@@ -50,14 +49,30 @@ input.release()
 cv2.destroyAllWindows()
 
 """
-# calculating fps
-# start time to calculate FPS
-    start = time.time()
+def cropping_person_with_ball(self, results, frame):
 
-# End time
-    end = time.time()
-    # calculate the FPS for current frame detection
-    fps = 1 / (end-start)
+        detections = Detections(
+                    xyxy=results[0].boxes.xyxy.cpu().numpy(),
+                    confidence=results[0].boxes.conf.cpu().numpy(),
+                    class_id=results[0].boxes.cls.cpu().numpy().astype(int),
+                    )
+        for i, (xyxy, confidence, class_id, tracker_id) in enumerate(detections):
+            if class_id == 0:
+                x1, y1, x2, y2 = xyxy.astype(int)
+        
+        black = cv2.rectangle(np.copy(frame), (0, 0), (width, height), (0, 0, 0), -1)
+        try:
+            frame = frame[y1:y2, x1:x2]
+        except: pass
 
-print(f"{fps:.2f} FPS")
+        
+        frame = frame[int(xyxys[0][0][0]):int(xyxys[0][0][2]), int(xyxys[0][0][1]):int(xyxys[0][0][3])]
+        for ball in ballOnImage:
+            for xyxy in xyxys:
+                if ball[0][0][0] >= xyxy[0][0][0] and ball[0][0][1] >= xyxy[0][0][1] and ball[0][0][2] <= xyxy[0][0][2] and ball[0][0][2] <= xyxy[0][0][2]:
+                    frame = frame[xyxy[0][0][0]:xyxy[0][0][1], xyxy[0][0][2]:xyxy[0][0][3]]
+                    pass
+        
+        black[y1:y2, x1:x2] = frame
+        return black
 """
